@@ -63,6 +63,12 @@
       },"RequestInit's mode is no-cors and integrity is not empty");
 
       test(function() {
+        assert_throws(new TypeError() ,
+                      function() { new Request("", {"mode" : "cors", "cache" : "only-if-cached"}); },
+                      "Expect TypeError exception");
+      },"RequestInit's cache mode is only-if-cached and mode is not same-origin");
+
+      test(function() {
         var initialHeaders = new Headers([["Content-Type", "potato"]]);
         var initialRequest = new Request("", {"headers" : initialHeaders});
         var request = new Request(initialRequest);
@@ -99,6 +105,20 @@
           assert_throws(new TypeError(), function() { new Request("", options); });
         },"Bad " + parameter +" init parameter value");
       });
+
+      function testOnlyIfCachedMode(fetchMode, ok) {
+        test(function() {
+          var options = {"cache": "only-if-cached", "mode": fetchMode};
+          if (ok)
+            new Request("test", options);
+          else
+            assert_throws(new TypeError(), function() { new Request("test", options); });
+        }, "Request with cache mode: only-if-cached and fetch mode: " + fetchMode);
+      }
+      testOnlyIfCachedMode("same-origin", true);
+      testOnlyIfCachedMode("cors", false);
+      testOnlyIfCachedMode("no-cors", false);
+
     </script>
   </body>
 </html>

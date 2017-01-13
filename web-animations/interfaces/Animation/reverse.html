@@ -5,7 +5,6 @@
 <script src="/resources/testharness.js"></script>
 <script src="/resources/testharnessreport.js"></script>
 <script src="../../testcommon.js"></script>
-<link rel="stylesheet" href="/resources/testharness.css">
 <body>
 <div id="log"></div>
 <script>
@@ -145,6 +144,15 @@ test(function(t) {
     'reverse() should not affect the currentTime if the playbackRate == 0');
   t.done();
 }, 'reverse() when playbackRate == 0');
+
+test(function(t) {
+  var div = createDiv(t);
+  var animation =
+    new Animation(new KeyframeEffect(div, null, 100 * MS_PER_SEC), null);
+
+  assert_throws('InvalidStateError', function() { animation.reverse(); });
+}, 'Reversing an animation without an active timeline throws an ' +
+   'InvalidStateError');
 
 </script>
 </body>
